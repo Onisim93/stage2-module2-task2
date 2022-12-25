@@ -34,11 +34,10 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", login);
                 resp.sendRedirect("/user/hello.jsp");
             } else {
-                doGet(req, resp);
+                req.getRequestDispatcher("/login.jsp").forward(req,resp);
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             req.getRequestDispatcher("/login.jsp").forward(req,resp);
         }
     }
