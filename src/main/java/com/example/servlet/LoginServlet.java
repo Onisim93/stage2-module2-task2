@@ -13,14 +13,12 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            resp.sendRedirect("/user/hello.jsp");
+        if (session == null || session.getAttribute("user") == null) {
+            resp.sendRedirect("/login.jsp");
         }
-        else {
-            req.getRequestDispatcher("/login.jsp").forward(req,resp);
-        }
+        resp.sendRedirect("/user/hello.jsp");
     }
 
     @Override
@@ -34,11 +32,10 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", login);
                 resp.sendRedirect("/user/hello.jsp");
             } else {
-                doGet(req, resp);
+                req.getRequestDispatcher("/login.jsp").forward(req,resp);
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
             req.getRequestDispatcher("/login.jsp").forward(req,resp);
         }
     }
