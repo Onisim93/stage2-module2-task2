@@ -16,25 +16,30 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
-            resp.sendRedirect("user/hello.jsp");
+            resp.sendRedirect("/user/hello.jsp");
         }
         else {
-            req.getRequestDispatcher("login.jsp").forward(req,resp);
+            req.getRequestDispatcher("/login.jsp").forward(req,resp);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
+        try {
+            String login = req.getParameter("login");
+            String password = req.getParameter("password");
 
-        if (login != null && password != null && Users.getInstance().getUsers().contains(login) && !password.isEmpty()) {
-            HttpSession session = req.getSession();
-            session.setAttribute("user", login);
-            resp.sendRedirect("user/hello.jsp");
+            if (Users.getInstance().getUsers().contains(login) && !password.trim().isEmpty()) {
+                HttpSession session = req.getSession();
+                session.setAttribute("user", login);
+                resp.sendRedirect("/user/hello.jsp");
+            } else {
+                doGet(req, resp);
+            }
         }
-        else {
-            doGet(req,resp);
+        catch (Exception e) {
+            e.printStackTrace();
+            req.getRequestDispatcher("/login.jsp").forward(req,resp);
         }
     }
 }
